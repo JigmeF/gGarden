@@ -172,6 +172,35 @@ static void ball(double x,double y,double z,double r)
    //  Undo transofrmations
    glPopMatrix();
 }
+//a cylinder that we can use for tables
+static void leg(double x,double y,double z,double l, double r)
+{
+   const double wid=0.1;
+   //  Save transformation
+   glPushMatrix();
+   //  Offset, scale and rotate
+   glTranslated(x,y,z);
+   glScaled(r,r,r);
+
+   float yellow[]   = {1.0,1.0,0.0,1.0};
+   float Emission[] = {0.0,0.0,0.01,1.0};
+
+   glMaterialf(GL_FRONT,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT,GL_SPECULAR,yellow);
+   glMaterialfv(GL_FRONT,GL_EMISSION,Emission);
+   //  Bands of latitude
+   glBegin(GL_QUAD_STRIP);
+   for (int th=0;th<=360;th+=30)
+   {
+      glNormal3d(wid*Cos(th),0,wid*Sin(th));
+      glVertex3d(wid*Cos(th),0,wid*Sin(th));
+      glNormal3d(wid*Cos(th),l,wid*Sin(th));
+      glVertex3d(wid*Cos(th),l,wid*Sin(th));
+   }
+   glEnd();
+   //  Undo transofrmations
+   glPopMatrix();
+}
 static void chessBoard(double x,double y,double z,
                  double dx,double dy,double dz,
                  double th)
@@ -224,7 +253,6 @@ static void chessBoard(double x,double y,double z,
    glVertex3f(-1,+.2,+1);
    glVertex3f(-1,+.2,-1);
    //top front edge
-   glColor3f(1,1,1);
    glNormal3f( 0,1, 0);
    glVertex3f(-1,.2,-1);
    glVertex3f(+1,.2,-1);
@@ -259,7 +287,72 @@ static void chessBoard(double x,double y,double z,
    //  Undo transformations
    glPopMatrix();
 }
+static void aTable(double x,double y,double z,
+                 double dx,double dy,double dz,
+                 double th)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   //  Save transformation
+   glPushMatrix();
+   // offset
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(dx,dy,dz);
 
+   glBegin(GL_QUADS);
+   
+   glColor3f(0.58,0.29,0);
+   //base of table
+   glNormal3f( 0,1, 0);
+   glVertex3f(-1,0,-1);
+   glVertex3f(+1,0,-1);
+   glVertex3f(+1,0,+1);
+   glVertex3f(-1,0,+1);
+   //front side
+   glNormal3f(0,0,1);
+   glVertex3f(-1,0, 1);
+   glVertex3f(+1,0, 1);
+   glVertex3f(+1,+.33, 1);
+   glVertex3f(-1,.33, 1);
+   //back side
+   glNormal3f(0,0,-1);
+   glVertex3f(+1,0,-1);
+   glVertex3f(-1,0,-1);
+   glVertex3f(-1,+.33,-1);
+   glVertex3f(+1,+.33,-1);
+   //right side
+   glNormal3f(+1, 0, 0);
+   glVertex3f(+1,0,+1);
+   glVertex3f(+1,0,-1);
+   glVertex3f(+1,+.33,-1);
+   glVertex3f(+1,+.33,+1);
+   //left side
+   glNormal3f(-1, 0, 0);
+   glVertex3f(-1,-0,-1);
+   glVertex3f(-1,-0,+1);
+   glVertex3f(-1,+.33,+1);
+   glVertex3f(-1,+.33,-1);
+   //top of table
+   glNormal3f( 0,1, 0);
+   glVertex3f(-1,.33,-1);
+   glVertex3f(+1,.33,-1);
+   glVertex3f(+1,.33,+1);
+   glVertex3f(-1,.33,+1);
+   glEnd();
+   //legs
+   leg(-.90,0,-.90, -1.5, 1);
+   leg(-.90,0,.90, -1.5, 1);
+   leg(.90,0,.90, -1.5, 1);
+   leg(.90,0,-.90, -1.5, 1);
+   //  Undo transformations
+   glPopMatrix();
+}
 
 
 /*
@@ -346,7 +439,9 @@ void display()
    // aHouse(.5,.25,1,.7,.5,.5,190);
    // aHouse(-.75,.25,0,.3,.5,.2,80);
    // aCamera(1,2,1,.2,.2,.2,42,83);
-   chessBoard(0,0,0,1,1,1,190);
+   // chessBoard(0,0,0,1,1,1,190);
+   // cylinder(0,-2,0,1);
+   aTable(0,0,0,1,1,1,0);
    glDisable(GL_LIGHTING);
 
    //  Five pixels from the lower left corner of the window
