@@ -483,6 +483,36 @@ static void bishop(double x, double y, double z,
    cylinder(0,.69,0,-.69,1,1.1);
    glPopMatrix();
 }
+static void rook(double x, double y, double z,
+                   double r, double th)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   //  Save transformation
+   glPushMatrix();
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(r,r,r);
+
+   //base 
+   cylinder(0,0.69,0,-.69,1,1.1);
+   conal(0,-1.11,0,1,5,1, -90);
+   cylinder(0,4.2,0,-.7, 1, .75);
+   ball(.55,4.3,0,.18);
+   ball(-.55,4.3,0,.18);
+   ball(0,4.3,.55,.18);
+   ball(0,4.3,-.55,.18);
+   ball(-.40,4.3,-.40,.18);
+   ball(.40,4.3,.40,.18);
+   ball(.40,4.3,-.40,.18);
+   ball(-.40,4.3,.40,.18);
+   glPopMatrix();
+}
 /*
  *  OpenGL (GLUT) calls this routine to display the scene
  */
@@ -571,8 +601,9 @@ void display()
    // cylinder(0,-2,0,1);
    // aTable(0,0,0,1,1,1,0);
    // conal(0,0,0,1,5,1, -90);
-   // pawn(.7,0,.7,.4,0);
-   // bishop(0,0,0,.5,0);
+   pawn(.7,0,.7,.4,0);
+   bishop(0,0,0,.5,0);
+   rook(-.7,0,-.7,.5,0);
    glDisable(GL_LIGHTING);
 
    //  Five pixels from the lower left corner of the window
