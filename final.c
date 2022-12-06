@@ -604,6 +604,31 @@ static void king(double x, double y, double z,
    cube(0,4.4,0,.3,.1,.08,0);
    glPopMatrix();
 }
+static void queen(double x, double y, double z, double r, double th)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   //  Save transformation
+   glPushMatrix();
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(r,r,r);
+   //le piece
+   cylinder(0,0.69,0,-.69,1,1);
+   conal(0,-1.11,0,1,4,1, -90);
+   ellipsoid(0,2.7,0,.4,.1,.4);
+   conal(0,4.4,0,.7,1.8,.7,90);
+   ellipsoid(0,3.8,0,.7,.2,.7);
+   conal(0,3.75,0,.5,.5,.5, -90);
+   ball(0,4.3,0,.22);
+   glPopMatrix();
+
+}
 /*
  *  OpenGL (GLUT) calls this routine to display the scene
  */
@@ -692,10 +717,11 @@ void display()
    // cylinder(0,-2,0,1);
    // aTable(0,0,0,1,1,1,0);
    // conal(0,0,0,1,5,1, -90);
-   pawn(.7,0,.7,.4,0);
+   // pawn(.7,0,.7,.4,0);
    // bishop(0,0,0,.5,0);
-   rook(-.7,0,-.7,.5,0);
-   king(0,0,0,.6,0);
+   // rook(-.7,0,-.7,.5,0);
+   // king(0,0,0,.6,0);
+   queen(0,-.5,0,.55,0);
    glDisable(GL_LIGHTING);
 
    //  Five pixels from the lower left corner of the window
