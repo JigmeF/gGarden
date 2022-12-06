@@ -246,10 +246,12 @@ static void ellipsoid(double x,double y,double z,double dx, double dy, double dz
  *     at (x,y,z)
  *     dimensions (dx,dy,dz)
  *     rotated th about the y axis
+ *     rotated zh about the z axis
+ *     rotated xh about the x axis
  */
 static void cube(double x,double y,double z,
                  double dx,double dy,double dz,
-                 double th)
+                 double th, double zh, double xh)
 {
    float yellow[]   = {1.0,1.0,0.0,1.0};
    float Emission[] = {0.0,0.0,0.01,1.0};
@@ -263,6 +265,8 @@ static void cube(double x,double y,double z,
    //  Offset
    glTranslated(x,y,z);
    glRotated(th,0,1,0);
+   glRotated(zh, 0,0,1);
+   glRotated(xh, 1,0,0);
    glScaled(dx,dy,dz);
    //  Cube
    glBegin(GL_QUADS);
@@ -600,10 +604,11 @@ static void king(double x, double y, double z,
    ellipsoid(0,2.7,0,.4,.1,.4);
    conal(0,4.4,0,.7,2,.7,90);
    ellipsoid(0,3.8,0,.7,.2,.7);
-   cube(0,4.2,0,.11,.5,.08,0);
-   cube(0,4.4,0,.3,.1,.08,0);
+   cube(0,4.2,0,.11,.5,.08,0,0,0);
+   cube(0,4.4,0,.3,.1,.08,0,0,0);
    glPopMatrix();
 }
+// draws the queen piece at (x,y,z) scaled by r, rotated around the y axis by th
 static void queen(double x, double y, double z, double r, double th)
 {
    //  Set specular color to white
@@ -627,7 +632,38 @@ static void queen(double x, double y, double z, double r, double th)
    conal(0,3.75,0,.5,.5,.5, -90);
    ball(0,4.3,0,.22);
    glPopMatrix();
-
+}
+// draws the knight piece at (x,y,z) scaled by r, rotated around the y axis by th
+static void knight(double x, double y, double z, double r, double th)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   //  Save transformation
+   glPushMatrix();
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(r,r,r);
+   //le piece
+   cylinder(0,0.69,0,-.69,1,1);
+   conal(0,-1,0,1,3,1, -90);
+   cylinder(0,1,0,1.3,1,.4);
+   ball(0,2.5,0,.5);
+   cube(-.6,2.4,0,.5,.3,.3,0,20,0);
+   ellipsoid(-1.15,2.2,0,.3,.4,.55);
+   ball(0,2.69,.4,.12);
+   ball(0,2.69,-.4,.12);
+   //funny eyebrows i made on accident
+   ellipsoid(0,2.8,.4,.2,.1,.1);
+   ellipsoid(0,2.8,-.4,.2,.1,.1);
+   //ears
+   ellipsoid(.2,2.9,.4,.1,.2,.1);
+   ellipsoid(.2,2.9,-.4,.1,.2,.1);
+   glPopMatrix();
 }
 /*
  *  OpenGL (GLUT) calls this routine to display the scene
@@ -684,7 +720,7 @@ void display()
    float Diffuse[]   = {0.01*diffuse ,0.01*diffuse ,0.01*diffuse ,1.0};
    float Specular[]  = {0.01*specular,0.01*specular,0.01*specular,1.0};
    //  Light position
-   float Position[]  = {5*Cos(zh),5*Sin(zh),5*Sin(zh),1.0};
+   float Position[]  = {5*Cos(zh),0,5*Sin(zh),1.0};
    //  Draw light position as ball (still no lighting here)
    glColor3f(1,1,1);
    ball(Position[0],Position[1],Position[2] , 0.1);
@@ -721,7 +757,8 @@ void display()
    // bishop(0,0,0,.5,0);
    // rook(-.7,0,-.7,.5,0);
    // king(0,0,0,.6,0);
-   queen(0,-.5,0,.55,0);
+   // queen(0,-.5,0,.55,0);
+   knight(0,-0.5,0,.5,0);
    glDisable(GL_LIGHTING);
 
    //  Five pixels from the lower left corner of the window
