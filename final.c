@@ -241,6 +241,72 @@ static void ellipsoid(double x,double y,double z,double dx, double dy, double dz
    //  Undo transofrmations
    glPopMatrix();
 }
+/*
+ *  Draw a cube
+ *     at (x,y,z)
+ *     dimensions (dx,dy,dz)
+ *     rotated th about the y axis
+ */
+static void cube(double x,double y,double z,
+                 double dx,double dy,double dz,
+                 double th)
+{
+   float yellow[]   = {1.0,1.0,0.0,1.0};
+   float Emission[] = {0.0,0.0,0.01,1.0};
+
+   glMaterialf(GL_FRONT,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT,GL_SPECULAR,yellow);
+   glMaterialfv(GL_FRONT,GL_EMISSION,Emission);
+   //  Bands of latitude
+   //  Save transformation
+   glPushMatrix();
+   //  Offset
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(dx,dy,dz);
+   //  Cube
+   glBegin(GL_QUADS);
+   //  Front
+   glNormal3f(0,0,1);
+   glVertex3f(-1,-1, 1);
+   glVertex3f(+1,-1, 1);
+   glVertex3f(+1,+1, 1);
+   glVertex3f(-1,+1, 1);
+   //  Back
+   glNormal3f(0,0,-1);
+   glVertex3f(+1,-1,-1);
+   glVertex3f(-1,-1,-1);
+   glVertex3f(-1,+1,-1);
+   glVertex3f(+1,+1,-1);
+   //  Right
+   glNormal3f(1,0,0);
+   glVertex3f(+1,-1,+1);
+   glVertex3f(+1,-1,-1);
+   glVertex3f(+1,+1,-1);
+   glVertex3f(+1,+1,+1);
+   //  Left
+   glNormal3f(-1,0,0);
+   glVertex3f(-1,-1,-1);
+   glVertex3f(-1,-1,+1);
+   glVertex3f(-1,+1,+1);
+   glVertex3f(-1,+1,-1);
+   //  Top
+   glNormal3f(0,1,0);
+   glVertex3f(-1,+1,+1);
+   glVertex3f(+1,+1,+1);
+   glVertex3f(+1,+1,-1);
+   glVertex3f(-1,+1,-1);
+   //  Bottom
+   glNormal3f(0,-1,0);
+   glVertex3f(-1,-1,-1);
+   glVertex3f(+1,-1,-1);
+   glVertex3f(+1,-1,+1);
+   glVertex3f(-1,-1,+1);
+   //  End
+   glEnd();
+   //  Undo transformations
+   glPopMatrix();
+}
 //a cylinder that we can use 
 static void cylinder(double x,double y,double z,double l, double r, double wid)
 {
@@ -306,7 +372,7 @@ static void chessBoard(double x,double y,double z,
    glBegin(GL_QUADS);
    glColor3f(0.58,0.29,0);
    //base of board
-   glNormal3f( 0,1, 0);
+   glNormal3f( 0,-1, 0);
    glVertex3f(-1,0,-1);
    glVertex3f(+1,0,-1);
    glVertex3f(+1,0,+1);
@@ -513,6 +579,31 @@ static void rook(double x, double y, double z,
    ball(-.40,4.3,.40,.18);
    glPopMatrix();
 }
+static void king(double x, double y, double z,
+                   double r, double th)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   //  Save transformation
+   glPushMatrix();
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(r,r,r);
+   //le piece
+   cylinder(0,0.69,0,-.69,1,1);
+   conal(0,-1.11,0,1,4,1, -90);
+   ellipsoid(0,2.7,0,.4,.1,.4);
+   conal(0,4.4,0,.7,2,.7,90);
+   ellipsoid(0,3.8,0,.7,.2,.7);
+   cube(0,4.2,0,.11,.5,.08,0);
+   cube(0,4.4,0,.3,.1,.08,0);
+   glPopMatrix();
+}
 /*
  *  OpenGL (GLUT) calls this routine to display the scene
  */
@@ -602,8 +693,9 @@ void display()
    // aTable(0,0,0,1,1,1,0);
    // conal(0,0,0,1,5,1, -90);
    pawn(.7,0,.7,.4,0);
-   bishop(0,0,0,.5,0);
+   // bishop(0,0,0,.5,0);
    rook(-.7,0,-.7,.5,0);
+   king(0,0,0,.6,0);
    glDisable(GL_LIGHTING);
 
    //  Five pixels from the lower left corner of the window
