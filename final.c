@@ -1,7 +1,7 @@
 /*
- *  HW5:Lighting
+ *  Final
  *  Jigme Fritz
- *  some objects in space, in three different perspectives!
+ *  a program that shows what I learned in graphics
  *
  *  Key bindings:
  *  arrows     Projection and Orthogonal mode: Changes view angle
