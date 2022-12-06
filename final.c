@@ -208,6 +208,39 @@ static void ball(double x,double y,double z,double r)
    //  Undo transofrmations
    glPopMatrix();
 }
+/*
+ *  Draw a ball, and then turn it into an ellipsoid!
+ *     at (x,y,z)
+ *     use dx,dy,dz to smush it to your liking
+ */
+static void ellipsoid(double x,double y,double z,double dx, double dy, double dz)
+{
+   //  Save transformation
+   glPushMatrix();
+   //  Offset, scale and rotate
+   glTranslated(x,y,z);
+   glScaled(dx,dy,dz);
+   //  White ball with yellow specular
+   float yellow[]   = {1.0,1.0,0.0,1.0};
+   float Emission[] = {0.0,0.0,0.01,1.0};
+   glColor3f(1,1,1);
+   glMaterialf(GL_FRONT,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT,GL_SPECULAR,yellow);
+   glMaterialfv(GL_FRONT,GL_EMISSION,Emission);
+   //  Bands of latitude
+   for (int ph=-90;ph<90;ph+=10)
+   {
+      glBegin(GL_QUAD_STRIP);
+      for (int th=0;th<=360;th+=2*10)
+      {
+         Vertex(th,ph);
+         Vertex(th,ph+10);
+      }
+      glEnd();
+   }
+   //  Undo transofrmations
+   glPopMatrix();
+}
 //a cylinder that we can use 
 static void cylinder(double x,double y,double z,double l, double r, double wid)
 {
@@ -249,6 +282,8 @@ static void cylinder(double x,double y,double z,double l, double r, double wid)
    //  Undo transofrmations
    glPopMatrix();
 }
+
+
 static void chessBoard(double x,double y,double z,
                  double dx,double dy,double dz,
                  double th)
@@ -335,6 +370,8 @@ static void chessBoard(double x,double y,double z,
    //  Undo transformations
    glPopMatrix();
 }
+
+
 static void aTable(double x,double y,double z,
                  double dx,double dy,double dz,
                  double th)
@@ -401,6 +438,8 @@ static void aTable(double x,double y,double z,
    //  Undo transformations
    glPopMatrix();
 }
+
+
 static void pawn(double x,double y,double z,
                  double r, double th)
 {
@@ -417,13 +456,33 @@ static void pawn(double x,double y,double z,
    glTranslated(x,y,z);
    glRotated(th,0,1,0);
    glScaled(r,r,r);
-   ball(0,4,0,.6);
-   conal(0,0,0,1,4,1, -90);
-   cylinder(0,1.4,0,-.69,1,1.1);
-
+   ball(0,3.31,0,.6);
+   conal(0,-.71,0,1,4,1, -90);
+   cylinder(0,.69,0,-.69,1,1.1);
    glPopMatrix();
 }
-
+static void bishop(double x, double y, double z,
+                   double r, double th)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   //  Save transformation
+   glPushMatrix();
+   // offset
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(r,r,r);
+   conal(0,-1.11,0,1,5,1, -90);
+   ellipsoid(0,4.04,0,.5,.75,.5);
+   ellipsoid(0,4.79,0, .2, .15, .2);
+   cylinder(0,.69,0,-.69,1,1.1);
+   glPopMatrix();
+}
 /*
  *  OpenGL (GLUT) calls this routine to display the scene
  */
@@ -512,7 +571,8 @@ void display()
    // cylinder(0,-2,0,1);
    // aTable(0,0,0,1,1,1,0);
    // conal(0,0,0,1,5,1, -90);
-   pawn(0,0,0,.5,0);
+   // pawn(.7,0,.7,.4,0);
+   // bishop(0,0,0,.5,0);
    glDisable(GL_LIGHTING);
 
    //  Five pixels from the lower left corner of the window
