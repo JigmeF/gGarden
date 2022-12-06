@@ -140,6 +140,42 @@ static void Vertex(double th,double ph)
    glVertex3d(x,y,z);
 }
 /*
+ *  Draw a conal looking cylinder, starts with small radius, ends with larger, downwards
+ *     at (x,y,z)
+ *     with scaling (dx,dy,dz)
+ *     rotated around the x axis (rot)
+ */
+static void conal(double x,double y,double z,
+                 double dx,double dy,double dz, double rot)
+{
+   //  Save transformation
+   glPushMatrix();
+   //  Offset, scale and rotate
+   glTranslated(x,y,z);
+   glScaled(dx,dy,dz);
+   glRotated(rot,1,0,0);
+   //  White ball with yellow specular
+   float yellow[]   = {1.0,1.0,0.0,1.0};
+   float Emission[] = {0.0,0.0,0.01,1.0};
+   glColor3f(1,1,1);
+   glMaterialf(GL_FRONT,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT,GL_SPECULAR,yellow);
+   glMaterialfv(GL_FRONT,GL_EMISSION,Emission);
+   //  Bands of latitude
+   int ph = 20;
+   glBegin(GL_QUAD_STRIP);
+   for (int th=0;th<=360;th+=2*10)
+   {
+      Vertex(th,ph);
+      Vertex(th,ph+50);
+   }
+   glEnd();
+   //  Undo transofrmations
+   glPopMatrix();
+
+
+}
+/*
  *  Draw a ball
  *     at (x,y,z)
  *     radius (r)
@@ -172,10 +208,9 @@ static void ball(double x,double y,double z,double r)
    //  Undo transofrmations
    glPopMatrix();
 }
-//a cylinder that we can use for tables
-static void leg(double x,double y,double z,double l, double r)
+//a cylinder that we can use 
+static void cylinder(double x,double y,double z,double l, double r, double wid)
 {
-   const double wid=0.1;
    //  Save transformation
    glPushMatrix();
    //  Offset, scale and rotate
@@ -196,6 +231,19 @@ static void leg(double x,double y,double z,double l, double r)
       glVertex3d(wid*Cos(th),0,wid*Sin(th));
       glNormal3d(wid*Cos(th),l,wid*Sin(th));
       glVertex3d(wid*Cos(th),l,wid*Sin(th));
+   }
+   //lets close this cylinder
+   for (int th=0;th<=180;th+=30)
+   {
+      glNormal3d(0,1,0);
+      glVertex3d(wid*Cos(th),0,wid*Sin(th));
+      glVertex3d(wid*Cos(-th),0,wid*Sin(-th));
+
+   }
+   for (int th=0; th<= 180; th+=30){
+      glNormal3d(0,-1,0);
+      glVertex3d(wid*Cos(th),l,wid*Sin(th));
+      glVertex3d(wid*Cos(-th),l,wid*Sin(-th));
    }
    glEnd();
    //  Undo transofrmations
@@ -346,14 +394,35 @@ static void aTable(double x,double y,double z,
    glVertex3f(-1,.33,+1);
    glEnd();
    //legs
-   leg(-.90,0,-.90, -1.5, 1);
-   leg(-.90,0,.90, -1.5, 1);
-   leg(.90,0,.90, -1.5, 1);
-   leg(.90,0,-.90, -1.5, 1);
+   cylinder(-.90,0,-.90, -1.5, 1,0.1);
+   cylinder(-.90,0,.90, -1.5, 1,0.1);
+   cylinder(.90,0,.90, -1.5, 1,0.1);
+   cylinder(.90,0,-.90, -1.5, 1,0.1);
    //  Undo transformations
    glPopMatrix();
 }
+static void pawn(double x,double y,double z,
+                 double r, double th)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   //  Save transformation
+   glPushMatrix();
+   // offset
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(r,r,r);
+   ball(0,4,0,.6);
+   conal(0,0,0,1,4,1, -90);
+   cylinder(0,1.4,0,-.69,1,1.1);
 
+   glPopMatrix();
+}
 
 /*
  *  OpenGL (GLUT) calls this routine to display the scene
@@ -410,7 +479,7 @@ void display()
    float Diffuse[]   = {0.01*diffuse ,0.01*diffuse ,0.01*diffuse ,1.0};
    float Specular[]  = {0.01*specular,0.01*specular,0.01*specular,1.0};
    //  Light position
-   float Position[]  = {5*Cos(zh),0,5*Sin(zh),1.0};
+   float Position[]  = {5*Cos(zh),5*Sin(zh),5*Sin(zh),1.0};
    //  Draw light position as ball (still no lighting here)
    glColor3f(1,1,1);
    ball(Position[0],Position[1],Position[2] , 0.1);
@@ -441,7 +510,9 @@ void display()
    // aCamera(1,2,1,.2,.2,.2,42,83);
    // chessBoard(0,0,0,1,1,1,190);
    // cylinder(0,-2,0,1);
-   aTable(0,0,0,1,1,1,0);
+   // aTable(0,0,0,1,1,1,0);
+   // conal(0,0,0,1,5,1, -90);
+   pawn(0,0,0,.5,0);
    glDisable(GL_LIGHTING);
 
    //  Five pixels from the lower left corner of the window
