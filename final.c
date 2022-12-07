@@ -1089,7 +1089,7 @@ static void Sphere(float x,float y,float z , float th,float ph , float dx,float 
 /*
  *  Draw a cube
  */
-static void Cube(float x,float y,float z , float th,float ph , float D)
+static void Cube(float x,float y,float z , float th,float ph , float dx, float dy, float dz)
 {
    //  Vertexes
    Point P1[] = { {-1,-1,+1} , {+1,-1,+1} , {+1,+1,+1} , {-1,+1,+1} }; //  Front
@@ -1108,7 +1108,7 @@ static void Cube(float x,float y,float z , float th,float ph , float D)
    //  Textures
    Point T[] = { {0,0,0} , {1,0,0} , {1,1,0} , {0,1,0} };
 
-   Transform(x,y,z,D,D,D,th,ph);
+   Transform(x,y,z,dx,dy,dz,th,ph);
    Color(1,1,1);
    DrawPolyShadow(P1,N1,T,4); //  Front
    DrawPolyShadow(P2,N2,T,4); //  Back
@@ -1255,6 +1255,92 @@ static void Rook(double x,double y,double z,
 
 
 }
+//refactored king, shadows and color picking
+static void King(double x, double y, double z,
+                   double r, double th, int c)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   float grey[] = {0.1215,0.117,0.1137};
+   if(c == 1)
+   {
+      glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   }
+   if(c == 0)
+   {
+      glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,black);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,grey);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,grey);
+   }
+
+   //  Save transformation
+   glPushMatrix();
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(r,r,r);
+   
+
+   Color(c,c,c);
+   Cylinder(0,0,0,0,90,1,.2);
+   Conal(0,1,0,0,90,.5,.5,1);
+   Sphere(0,2,0,0,0,.5,.2,.5);
+   Conal(0,2.4,0,0,-90,.4,.4,.8);
+   Sphere(0,3.2,0,0,0,.62,.2,.62);
+   Cube(0,3.5,0,0,0,.12,.7,.1);
+   Cube(0,3.8,0,0,0,.3,.10,.1);
+   glPopMatrix();
+}
+// refactored queen, color and shadows
+static void Queen(double x, double y, double z, double r, double th, int c)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   float grey[] = {0.1215,0.117,0.1137};
+   if(c == 1)
+   {
+      glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   }
+   if(c == 0)
+   {
+      glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,black);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,grey);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,grey);
+   }
+
+   //  Save transformation
+   glPushMatrix();
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(r,r,r);
+   
+
+   Color(c,c,c);
+   Cylinder(0,0,0,0,90,1,.2);
+   Conal(0,1,0,0,90,.5,.5,1);
+   Sphere(0,2,0,0,0,.5,.2,.5);
+   Conal(0,2.4,0,0,-90,.4,.4,.8);
+   Conal(0,3.4,0,0,90,.4,.4,.2);
+   Sphere(0,3.6,0,0,0,.3,.15,.3);
+   Sphere(0,3.8,0,0,0,.1,.1,.1);
+   glPopMatrix();
+
+}
+// refactored knight, color and shadows 
+// static void Knight(double x, double y, double z, double r, double th, int c)
+// {
+
+// }
+// nevermind, ran out of time
 /*
  *  Enable lighting
  */
@@ -1308,8 +1394,10 @@ void Scene(int Light)
    // Conal(0,0,0,0,0,.1,.1,.1);
    // Pawn(0,-1,0,1,0);
    // bishop(0,-1,0,1,0);
-   // Bishop(0,-1,0,1,0);
+   // Bishop(0,-1,0,1,0,1);
    // Rook(0,-1,0,1,0,0);
+   // King(0,-1,0,1,0,1);
+   Queen(0,-1,0,1,0,1);
    //  Disable textures
    // if (light) glDisable(GL_TEXTURE_2D);
    
