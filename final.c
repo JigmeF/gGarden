@@ -1139,25 +1139,36 @@ static void Conal(float x,float y,float z , float th,float ph , float dx,float d
 }
 //refactored pawn
 static void Pawn(double x,double y,double z,
-                 double r, double th)
+                 double r, double th, int c)
 {
+   //  Set specular color to white
    //  Set specular color to white
    float white[] = {1,1,1,1};
    float black[] = {0,0,0,1};
-   glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
-   glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-   glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
-   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   float grey[] = {0.1215,0.117,0.1137};
+   if(c == 1)
+   {
+      glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   }
+   if(c == 0)
+   {
+      glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,black);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,grey);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,grey);
+   }
+
    //  Save transformation
    glPushMatrix();
-   // offset
    glTranslated(x,y,z);
    glRotated(th,0,1,0);
    glScaled(r,r,r);
-   // ball(0,3.31,0,.6);
-   // conal(0,-.71,0,1,4,1, -90);
-   // cylinder(0,.69,0,-.69,1,1.1);
-   Color(1,1,1);
+   
+
+   Color(c,c,c);
    Cylinder(0,0,0,0,90,1,.2);
    Conal(0,.8,0,0,90,.5,.5,.9);
    Sphere(0,2.1,0,0,0,.57,.57,.57);
@@ -1165,32 +1176,83 @@ static void Pawn(double x,double y,double z,
 }
 //refactored bishop, has shadows
 static void Bishop(double x,double y,double z,
-                 double r, double th)
+                 double r, double th, int c)
 {
    //  Set specular color to white
    float white[] = {1,1,1,1};
    float black[] = {0,0,0,1};
-   glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
-   glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-   glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
-   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   float grey[] = {0.1215,0.117,0.1137};
+   if(c == 1)
+   {
+      glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   }
+   if(c == 0)
+   {
+      glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,black);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,grey);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,grey);
+   }
+
    //  Save transformation
    glPushMatrix();
-   // offset
    glTranslated(x,y,z);
    glRotated(th,0,1,0);
    glScaled(r,r,r);
-   //bishop
-   // conal(0,-1.11,0,1,5,1, -90);
-   // ellipsoid(0,4.04,0,.5,.75,.5);
-   // ellipsoid(0,4.79,0, .2, .15, .2);
-   // cylinder(0,.69,0,-.69,1,1.1);
-   Color(1,1,1);
+   
+
+   Color(c,c,c);
    Cylinder(0,0,0,0,90,1,.2);
    Conal(0,2.0,0,0,90,.5,.5,1.8);
    Sphere(0,4.3,0,0,0,.5,.90,.5);
    Sphere(0,5.2,0,0,0,.12,.07,.12);
    glPopMatrix();
+
+}
+//refactored rook, has shadows
+static void Rook(double x,double y,double z,
+                 double r, double th, int c)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   float grey[] = {0.1215,0.117,0.1137};
+   if(c == 1)
+   {
+      glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   }
+   if(c == 0)
+   {
+      glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,black);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,grey);
+      glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,grey);
+   }
+
+   //  Save transformation
+   glPushMatrix();
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(r,r,r);
+   
+
+   Color(c,c,c);
+   Cylinder(0,0,0,0,90,1,.2);
+   Conal(0,1.3,0,0,90,.5,.5,1.4);
+   Cylinder(0,3,0,0,90,.69,.43);
+   Sphere(0.55,3.5,0,0,0,.16,.16,.16);
+   Sphere(-0.55,3.5,0,0,0,.16,.16,.16);
+   Sphere(0,3.5,0.55,0,0,.16,.16,.16);
+   Sphere(0,3.5,-0.55,0,0,.16,.16,.16);
+
+   glPopMatrix();
+
 
 }
 /*
@@ -1246,7 +1308,8 @@ void Scene(int Light)
    // Conal(0,0,0,0,0,.1,.1,.1);
    // Pawn(0,-1,0,1,0);
    // bishop(0,-1,0,1,0);
-   Bishop(0,-1,0,1,0);
+   // Bishop(0,-1,0,1,0);
+   // Rook(0,-1,0,1,0,0);
    //  Disable textures
    // if (light) glDisable(GL_TEXTURE_2D);
    
