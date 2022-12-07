@@ -1163,6 +1163,36 @@ static void Pawn(double x,double y,double z,
    Sphere(0,2.1,0,0,0,.57,.57,.57);
    glPopMatrix();
 }
+//refactored bishop, has shadows
+static void Bishop(double x,double y,double z,
+                 double r, double th)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float black[] = {0,0,0,1};
+   glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,black);
+   //  Save transformation
+   glPushMatrix();
+   // offset
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(r,r,r);
+   //bishop
+   // conal(0,-1.11,0,1,5,1, -90);
+   // ellipsoid(0,4.04,0,.5,.75,.5);
+   // ellipsoid(0,4.79,0, .2, .15, .2);
+   // cylinder(0,.69,0,-.69,1,1.1);
+   Color(1,1,1);
+   Cylinder(0,0,0,0,90,1,.2);
+   Conal(0,2.0,0,0,90,.5,.5,1.8);
+   Sphere(0,4.3,0,0,0,.5,.90,.5);
+   Sphere(0,5.2,0,0,0,.12,.07,.12);
+   glPopMatrix();
+
+}
 /*
  *  Enable lighting
  */
@@ -1214,7 +1244,9 @@ void Scene(int Light)
    // Cylinder(0,0,0,0,90,.2,.2);
    // Sphere(0,0,0,0,0,.3,.3,.3);
    // Conal(0,0,0,0,0,.1,.1,.1);
-   Pawn(0,-1,0,1,0);
+   // Pawn(0,-1,0,1,0);
+   // bishop(0,-1,0,1,0);
+   Bishop(0,-1,0,1,0);
    //  Disable textures
    // if (light) glDisable(GL_TEXTURE_2D);
    
